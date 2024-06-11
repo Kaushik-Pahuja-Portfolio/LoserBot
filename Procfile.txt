@@ -1,1 +1,1 @@
-python3 LoserBot.py
+worker: python3 LoserBot.py
