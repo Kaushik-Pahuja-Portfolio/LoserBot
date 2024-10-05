@@ -33,8 +33,16 @@ async def on_message(message):
             })
             data = res.json()
             if 'data' in data.keys() and len(data['data']) > 0:
-                msg = "\n".join(list(map(lambda c: c['image_uris']['png'], data['data'])))
-                await message.channel.send(msg)
+                msg = []
+                # msg = "\n".join(list(map(lambda c: c['image_uris']['png'], data['data'])))
+                for c in data['data']:
+                    if 'image_uris' in c.keys():
+                        msg.append(c['image_uris']['png'])
+                    else:
+                        for f in c['card_faces']:
+                            msg.append(f['image_uris']['png'])
+                for i in range(0, len(msg), 5):
+                    await message.channel.send("\n".join(msg[i:i+5]))
         await(client.process_commands(message))
 
 @client.command()
