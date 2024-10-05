@@ -3,11 +3,9 @@ from discord.ext import commands
 import re
 import requests
 import os
-from dotenv import load_dotenv
 import random
+from google.cloud import secretmanager
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
 
 # APIKEY = os.environ.get("DISCORD_TOKEN")
 
@@ -78,4 +76,5 @@ async def roll(ctx, arg):
 
 
 #main runner
-client.run(TOKEN)
+secretClient = secretmanager.SecretManagerServiceClient()
+client.run(secretClient.access_secret_version(request={"name": "projects/116342818934/secrets/bot_token/versions/latest"}).payload.data.decode("UTF-8"))
