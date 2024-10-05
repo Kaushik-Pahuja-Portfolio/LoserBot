@@ -3,6 +3,13 @@ from discord.ext import commands
 import re
 import requests
 import os
+from dotenv import load_dotenv
+import random
+
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
+
+# APIKEY = os.environ.get("DISCORD_TOKEN")
 
 intents = discord.Intents.default()
 intents.message_content=True
@@ -38,6 +45,29 @@ async def test(ctx):
 @client.command()
 async def mtg(ctx, arg):
     pass
-print(os.environ)
+
+@client.command()
+async def roll(ctx, arg):
+    rolls = re.findall(r"([0-9]+)d([0-9]+)([+-/*]?)([0-9]+)?", arg)
+    #print(arg, rolls)
+    lines = []
+    sums = []
+    for roll in rolls:
+        s = "("
+        results = []
+        for i in range(int(roll[0])):
+            results.append(random.randint(1, int(roll[1])))
+        s += " + ".join(str(x) for x in results) + ")"
+        if roll[2] != '':
+            s += " " + " ".join(roll[2:])
+        total = eval(s)
+        sums.append(int(total))
+        s = f"{roll[0]}d{roll[1]}{roll[2]}{roll[3]}: {s} = {int(total)}"
+        if total != int(total): s += " (rounded down)"
+        lines.append(s.replace("*", "\*"))
+    lines.append(f"total: {sum(sums)}")
+    await ctx.send('\n'.join(lines))
+
+
 #main runner
-client.run(os.getenv("DISCORD_TOKEN"))
+client.run(TOKEN)
