@@ -5,5 +5,5 @@ steps:
     args:
       - '-c'
       - >
-        vmlist=$(gcloud compute instances list --format='value(name)' --filter="labels.app:loserbot AND status:RUNNING") && for vm in $vmlist; do echo $vm && gcloud compute ssh cloudbuild@$vm --zone $(gcloud compute instances list --format='value(zone)' --filter="name='$vm'") --quiet -- './deployloser.bash'; done
+        vmlist=$(gcloud compute instances list --format='value(name)' --filter="labels.app:loserbot AND status:RUNNING") && for vm in $vmlist; do echo $vm && gcloud compute ssh cloudbuild@$vm --zone $(gcloud compute instances list --format='value(zone)' --filter="name='$vm'") --quiet -- 'ls && cd LoserBot && ./deployloser.bash'; done
     entrypoint: bash
