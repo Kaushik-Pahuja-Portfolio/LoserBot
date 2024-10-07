@@ -45,7 +45,7 @@ async def on_message(message):
 
 @client.command()
 async def test(ctx):
-    await ctx.send("hello @everyone",silent=True)
+    await ctx.send("if you're reading this it worked",silent=True)
     pass
 
 @client.command()
