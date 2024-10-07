@@ -74,6 +74,10 @@ async def roll(ctx, arg):
     lines.append(f"total: {sum(sums)}")
     await ctx.send('\n'.join(lines))
 
+@client.command()
+async def die(ctx, arg = "pls"):
+    quit()
+
 
 #main runner
 secretClient = secretmanager.SecretManagerServiceClient()
