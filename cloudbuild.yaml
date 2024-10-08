@@ -4,3 +4,4 @@ steps:
   - name: gcr.io/cloud-builders/gcloud
     args:
       gcloud compute ssh --project=instance-20240624-222203 --zone=us-central1-a instance-20240624-222203 --command="ls"
+    entrypoint: bash
