@@ -1,9 +1,8 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 steps:
-  - name: gcr.io/cloud-builders/gcloud
-    args:
+  - name: bash
+    script:
       - '-c'
       - >
-        vmlist=$(gcloud compute instances list --format='value(name)' --filter="labels.app:loserbot AND status:RUNNING") && for vm in $vmlist; do echo $vm && gcloud compute ssh kaushik_pahuja@$vm --zone $(gcloud compute instances list --format='value(zone)' --filter="name='$vm'") --quiet --command='rm -rf LoserBot && git clone https://github.com/Kaushik-Pahuja-Portfolio/LoserBot && chmod 777 LoserBot/deployloser.bash && ./LoserBot/deployloser.bash & exit'; done
-    entrypoint: bash
+        vmlist=$(gcloud compute instances list --format='value(name)' --filter="labels.app:loserbot AND status:RUNNING") && for vm in $vmlist; do echo $vm && nohup gcloud compute ssh kaushik_pahuja@$vm --zone $(gcloud compute instances list --format='value(zone)' --filter="name='$vm'") --quiet --command='rm -rf LoserBot && git clone https://github.com/Kaushik-Pahuja-Portfolio/LoserBot && chmod 777 LoserBot/deployloser.bash && ./LoserBot/deployloser.bash' & exit; done
