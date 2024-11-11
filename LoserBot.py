@@ -5,13 +5,14 @@ import requests
 import os
 import random
 from google.cloud import secretmanager
-
+import signal
 
 # APIKEY = os.environ.get("DISCORD_TOKEN")
 
 intents = discord.Intents.default()
 intents.message_content=True
 client = commands.Bot(command_prefix='!',help_command=None,intents=intents)
+
 
 @client.event
 async def on_ready():
@@ -23,7 +24,7 @@ async def on_message(message):
     if message.author == client.user:
         return
     else: 
-        cards = re.findall('~\[[a-zA-Z0-9\s\'\",.?!]+\]', message.content)
+        cards = re.findall(r'\[\[[a-zA-Z0-9\'\",.?!]+\]\]', message.content)
         cards = list(map(lambda c: {"name" : c[2:-1]}, cards))
         if len(cards) > 0:
             res = requests.request("POST", "https://api.scryfall.com/cards/collection", json={
@@ -43,9 +44,11 @@ async def on_message(message):
                     await message.channel.send("\n".join(msg[i:i+5]))
         await(client.process_commands(message))
 
+
 @client.command()
 async def test(ctx):
-    await ctx.send(f"if you're reading this it worked {ctx.author.name}",silent=True)
+    usr = await client.fetch_user(ctx.author.id)
+    await ctx.send(f"if you're reading this it worked {usr.mention}",silent=True)
     pass
 
 @client.command()
@@ -53,7 +56,8 @@ async def mtg(ctx, arg):
     pass
 
 @client.command()
-async def roll(ctx, arg):
+async def roll(ctx, *args):
+    arg = " ".join(args)
     rolls = re.findall(r"([0-9]+)d([0-9]+)([+-/*]?)([0-9]+)?", arg)
     #print(arg, rolls)
     lines = []
@@ -70,14 +74,13 @@ async def roll(ctx, arg):
         sums.append(int(total))
         s = f"{roll[0]}d{roll[1]}{roll[2]}{roll[3]}: {s} = {int(total)}"
         if total != int(total): s += " (rounded down)"
-        lines.append(s.replace("*", "\*"))
+        lines.append(s.replace("*", "\\*"))
     lines.append(f"total: {sum(sums)}")
     await ctx.send('\n'.join(lines))
 
 @client.command()
 async def die(ctx, arg = "pls"):
     quit()
-
 
 #main runner
 secretClient = secretmanager.SecretManagerServiceClient()
