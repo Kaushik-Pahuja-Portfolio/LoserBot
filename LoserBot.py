@@ -24,7 +24,7 @@ async def on_message(message):
     if message.author == client.user:
         return
     else: 
-        cards = re.findall(r'\[\[[a-zA-Z0-9\'\",.?!]+\]\]', message.content)
+        cards = re.findall(r'\[\[[a-zA-Z0-9\'\",.?!\s]+\]\]', message.content)
         cards = list(map(lambda c: {"name" : c[2:-1]}, cards))
         if len(cards) > 0:
             res = requests.request("POST", "https://api.scryfall.com/cards/collection", json={
